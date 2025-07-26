@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 // MARK: - Flag Card Component
 struct CountryCardView: View {
     let imageURL: String
@@ -25,7 +24,6 @@ struct CountryCardView: View {
         }
         .clipped()
         .cornerRadius(cornerRadius)
-        .shadow(radius: 4)
     }
 }
 
@@ -88,12 +86,22 @@ struct FlagCardSizeModifier: ViewModifier {
     func body(content: Content) -> some View {
         GeometryReader { geometry in
             let availableWidth = geometry.size.width - (horizontalPadding * 2)
-            let cardHeight = availableWidth * (2 / 3)
+            let cardHeight = availableWidth * 0.7
             
             content
                 .frame(width: availableWidth, height: cardHeight)
                 .padding(.horizontal, horizontalPadding)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
+        .frame(height: calculateHeight()) // Key fix: explicit height for the GeometryReader
+    }
+    
+    // Calculate expected height based on screen width
+    private func calculateHeight() -> CGFloat {
+        let screenWidth = UIScreen.main.bounds.width
+        let availableWidth = screenWidth - (horizontalPadding * 2)
+        let cardHeight = availableWidth * (2 / 3)
+        return cardHeight
     }
 }
 
