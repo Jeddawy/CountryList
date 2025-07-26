@@ -13,21 +13,28 @@ struct MainListView: View {
     @StateObject private var viewModel = CountryListViewModel()
     
     var body: some View {
-        NavigationView {
-            CountryListView(viewModel: viewModel)
-                .listStyle(.plain)
-                .navigationTitle("Country List")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        NavigationLink(destination: SearchCountryView()) {
-                            Image(systemName: "magnifyingglass")
-                                .tint(.gray)
+        ZStack {
+            NavigationView {
+                CountryListView(viewModel: viewModel)
+                    .listStyle(.plain)
+                    .navigationTitle("Country List")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            NavigationLink(destination: SearchCountryView()) {
+                                Image(systemName: "magnifyingglass")
+                                    .tint(.gray)
+                            }
                         }
                     }
-                }
+            }
         }
         
+        LoadingOverlayView(isLoading: $viewModel.isLoading)
+
+        .onAppear() {
+            viewModel.fetchCountry()
+        }
     }
 }
 
