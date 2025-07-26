@@ -5,8 +5,10 @@
 //  Created by Ibrahim El-geddawy on 26/07/2025.
 //
 
-
 import SwiftUI
+
+ //TODO: Remove it and handle it later
+var favoriteCountries: [Country] = []  // Favorites moved here
 
 // MARK: - Main View
 struct MainListView: View {
