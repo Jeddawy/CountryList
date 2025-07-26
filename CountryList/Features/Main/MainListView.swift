@@ -11,38 +11,35 @@ import SwiftUI
 // MARK: - Main View
 struct MainListView: View {
     @StateObject private var viewModel = CountryListViewModel()
-    
     var body: some View {
-        ZStack {
-            NavigationView {
-                CountryListView(viewModel: viewModel)
-                    .listStyle(.plain)
-                    .navigationTitle("Country List")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            NavigationLink(destination: SearchCountryView()) {
-                                Image(systemName: "magnifyingglass")
-                                    .tint(.gray)
-                            }
-                        }
-                    }
-            }
-        }
-        
-        LoadingOverlayView(isLoading: $viewModel.isLoading)
-
-        .onAppear() {
-            viewModel.fetchCountry()
-        }
-    }
+         NavigationStack {
+             CountryListView(viewModel: viewModel)
+                 .listStyle(.plain)
+                 .navigationTitle("Country List")
+                 .navigationBarTitleDisplayMode(.inline)
+                 .toolbar {
+                     ToolbarItem(placement: .navigationBarTrailing) {
+                         NavigationLink(destination: SearchCountryView()) {
+                             Image(systemName: "magnifyingglass")
+                                 .tint(.gray)
+                         }
+                     }
+                 }
+                 .overlay(
+                     LoadingOverlayView(isLoading: $viewModel.isLoading)
+                 )
+         }
+         .onAppear() {
+             viewModel.fetchCountry()
+         }
+     }
 }
 
 #Preview {
     MainListView()
 }
-
-private struct CountryListView: View {
+ 
+struct CountryListView: View {
     @ObservedObject var viewModel: CountryListViewModel
     
     var body: some View {
