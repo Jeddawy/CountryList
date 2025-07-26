@@ -39,7 +39,7 @@ class CountryListViewModel: ObservableObject {
                 if let decoded = try? JSONDecoder().decode([CountryDetails].self, from: data),
                    let first = decoded.first {
                     countryDetails = first
-                    countries = [Country(imageUrl: first.flag, name: first.name, capital: first.capital, currency: first.currencies.first?.name ?? "")]
+                    countries = [Country(imageUrl: first.flag ?? "", name: first.name ?? "", capital: first.capital ?? "", currency: first.currencies?.first?.name ?? "")]
                 }
             } catch {
                 print("Failed to fetch country details: \(error)")
@@ -49,10 +49,10 @@ class CountryListViewModel: ObservableObject {
 }
 
 struct CountryDetails: Decodable {
-    let name: String
-    let flag: String
-    let capital: String
-    let currencies: [Currency]
+    let name: String?
+    let flag: String?
+    let capital: String?
+    let currencies: [Currency]?
 }
 
 struct Currency: Decodable {
