@@ -20,21 +20,19 @@ class CountryListViewModel: ObservableObject {
     init(repository: CountryRepository = CountriesRepository()) {
         self.repository = repository
     }
-
     
     func fetchCountry() {
         Task {
+            isLoading = true
+            defer { isLoading = false }
             let result = await locationService.requestCountry()
             country = result
-            await fetchCountryDetails(for: result)
+            await fetchCountry(for: result)
         }
     }
     
-    private func fetchCountryDetails(for name: String) async {
+    private func fetchCountry(for name: String) async {
         Task {
-            isLoading = true
-            defer { isLoading = false }
-            
             do {
                 let results = try await repository.fetchCountry(name: name)
                 self.countries = [results]

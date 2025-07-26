@@ -9,15 +9,15 @@ import SwiftUI
 
 struct SearchCountryView: View {
     @StateObject private var viewModel = SearchCountryViewModel()
-
+    
     var body: some View {
         NavigationStack {
             VStack {
                 SearchBarView(text: $viewModel.searchText) {
-                                Task {
-                                    await viewModel.fetchCountries(for: viewModel.searchText)
-                                }
-                            }
+                    Task {
+                        await viewModel.fetchCountries(for: viewModel.searchText)
+                    }
+                }
                 .padding(.top)
                 
                 if viewModel.isLoading {
@@ -26,18 +26,18 @@ struct SearchCountryView: View {
                 }
                 
                 List(viewModel.countries, id: \.name) { country in
-                        CountryCardView(imageURL: country.imageUrl, title: country.name)
-                            .flagCardSize(horizontalPadding: 0)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                               Button {
-                                                   viewModel.addToFavorites(country)
-                                               } label: {
-                                                   Label("Add", systemImage: "plus")
-                                               }
-                                               .tint(.green)
-                                           }
+                    CountryCardView(imageURL: country.imageUrl, title: country.name)
+                        .flagCardSize(horizontalPadding: 0)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button {
+                                viewModel.addToFavorites(country)
+                            } label: {
+                                Label("Add", systemImage: "plus")
+                            }
+                            .tint(.green)
+                        }
                 }
                 .listStyle(PlainListStyle())
             }
@@ -63,14 +63,14 @@ struct SearchBarView: View {
             
             // Text Field
             TextField(placeholder, text: $text)
-                           .textFieldStyle(PlainTextFieldStyle())
-                           .padding(.vertical, 8)
-                           .disableAutocorrection(true)
-                           .keyboardType(.webSearch)
-                           .submitLabel(.search) // Show "Search" on keyboard
-                           .onSubmit {
-                               onSearch?()
-                           }
+                .textFieldStyle(PlainTextFieldStyle())
+                .padding(.vertical, 8)
+                .disableAutocorrection(true)
+                .keyboardType(.webSearch)
+                .submitLabel(.search) // Show "Search" on keyboard
+                .onSubmit {
+                    onSearch?()
+                }
             
             // Clear Button
             if !text.isEmpty {
