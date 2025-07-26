@@ -13,20 +13,11 @@ struct SearchCountryView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                HStack {
-                    TextField("Enter country name", text: $viewModel.searchText)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                        .keyboardType(.webSearch)
-                    
-                    Button("Search") {
-                        Task {
-                            await viewModel.fetchCountries(for: viewModel.searchText)
-                        }
-                    }
-                    .disabled(viewModel.searchText.isEmpty)
-                    .padding(.trailing)
-                }
+                SearchBarView(text: $viewModel.searchText) {
+                                Task {
+                                    await viewModel.fetchCountries(for: viewModel.searchText)
+                                }
+                            }
                 .padding(.top)
                 
                 if viewModel.isLoading {
@@ -35,12 +26,18 @@ struct SearchCountryView: View {
                 }
                 
                 List(viewModel.countries, id: \.name) { country in
-                    NavigationLink(destination: CountryDetailsView(country: country)) {
                         CountryCardView(imageURL: country.imageUrl, title: country.name)
                             .flagCardSize(horizontalPadding: 0)
-                    }
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                               Button {
+                                                   viewModel.addToFavorites(country)
+                                               } label: {
+                                                   Label("Add", systemImage: "plus")
+                                               }
+                                               .tint(.green)
+                                           }
                 }
                 .listStyle(PlainListStyle())
             }
@@ -51,4 +48,51 @@ struct SearchCountryView: View {
 
 #Preview {
     SearchCountryView()
+}
+
+struct SearchBarView: View {
+    @Binding var text: String
+    var placeholder: String = "Search country"
+    var onSearch: (() -> Void)?
+    
+    var body: some View {
+        HStack {
+            // Search Icon
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(.gray)
+            
+            // Text Field
+            TextField(placeholder, text: $text)
+                           .textFieldStyle(PlainTextFieldStyle())
+                           .padding(.vertical, 8)
+                           .disableAutocorrection(true)
+                           .keyboardType(.webSearch)
+                           .submitLabel(.search) // Show "Search" on keyboard
+                           .onSubmit {
+                               onSearch?()
+                           }
+            
+            // Clear Button
+            if !text.isEmpty {
+                Button(action: { text = "" }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            // Search Button
+            if let onSearch = onSearch {
+                Button(action: onSearch) {
+                    Text("Search")
+                        .fontWeight(.semibold)
+                }
+                .disabled(text.isEmpty)
+            }
+        }
+        .padding(.horizontal)
+        .background(Color(.systemGray6))
+        .cornerRadius(12)
+        .padding(.horizontal)
+        .padding(.top, 10)
+    }
 }

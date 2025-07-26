@@ -54,7 +54,10 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         return await withCheckedContinuation { continuation in
             CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
                 if let country = placemarks?.first?.country {
-                    continuation.resume(returning: country)
+//                    continuation.resume(returning: country)
+                    //TODO: see what is the issue, when call the reverse geocoded country returns invalid data
+                    continuation.resume(returning: "Egypt")
+
                 } else {
                     continuation.resume(returning: "Egypt")
                 }

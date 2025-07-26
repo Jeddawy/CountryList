@@ -12,6 +12,7 @@ class SearchCountryViewModel: ObservableObject {
     @Published var countries: [Country] = []
     @Published var isLoading: Bool = false
     @Published var searchText: String = ""
+//    @Published var favoriteCountries: [Country] = []  // Favorites moved here
 
     func fetchCountries(for query: String) async {
         guard !query.isEmpty else { return }
@@ -19,7 +20,7 @@ class SearchCountryViewModel: ObservableObject {
         defer { isLoading = false }
         
         let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
-        guard let url = URL(string: "https://restcountries.com/v2/name/\(encodedQuery)?fields=flag,name") else {
+        guard let url = URL(string: "https://restcountries.com/v2/name/\(encodedQuery)?fields=flags,name") else {
             return
         }
         print(url)
@@ -28,7 +29,13 @@ class SearchCountryViewModel: ObservableObject {
             let (data, _) = try await URLSession.shared.data(from: url)
             if let decoded = try? JSONDecoder().decode([CountryDetails].self, from: data) {
                 self.countries = decoded.map {
-                    Country(imageUrl: $0.flag ?? "", name: $0.name ?? "", capital: $0.capital ?? "", currency: $0.currencies?.first?.name ?? "")
+                    
+                    Country(
+                        imageUrl: $0.flags?.png ?? "",
+                        name: $0.name ?? "",
+                        capital:  "",
+                        currency:  ""
+                    )
                 }
             } else {
                 self.countries = []
@@ -38,4 +45,12 @@ class SearchCountryViewModel: ObservableObject {
             self.countries = []
         }
     }
+    
+    
+    func addToFavorites(_ country: Country) {
+        if !favoriteCountries.contains(where: { $0.name == country.name }) {
+            favoriteCountries.append(country)
+        }
+    }
+    
 }
