@@ -8,10 +8,10 @@
 import Foundation
 
 enum CountryParameterFields: String, CodingKey, CaseIterable {
-    case flags
-    case name
-    case currencies
-    case capital
+    case flags = "flags"
+    case name = "name"
+    case currencies = "currencies"
+    case capital = "capital"
 }
 
 enum CountryEndpoint: APIEndpoint {
@@ -53,10 +53,10 @@ enum CountryEndpoint: APIEndpoint {
     var parameters: [String: Any?]? {
         switch self {
         case .searchCountry:
-            var items : [String: Any] = ["fields" : "\(CountryParameterFields.flags.rawValue),\(CountryParameterFields.name)"]
+            var items : [String: Any] = ["fields" : "\(CountryParameterFields.flags.rawValue),\(CountryParameterFields.name.rawValue)"]
             return items
         case .fetchCountry:
-            var items : [String: Any] = ["fields" : "\(CountryParameterFields.flags.rawValue),\(CountryParameterFields.name)"]
+            var items : [String: Any] = ["fields" : "\(CountryParameterFields.flags.rawValue),\(CountryParameterFields.name.rawValue)"]
             return items
         case .fetchCountryDetails:
             let fields = CountryParameterFields.allCases.map { $0.rawValue }.joined(separator: ",")

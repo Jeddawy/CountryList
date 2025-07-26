@@ -15,7 +15,6 @@ struct CountryDetails: Decodable {
     
     struct Flags: Decodable {
         let png: String?
-        let svg: String?
     }
 }
 

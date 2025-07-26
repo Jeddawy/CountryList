@@ -10,6 +10,7 @@ import Foundation
 protocol CountryRepository {
     func fetchCountry(name: String) async throws -> Country
     func searchCountries(query: String) async throws -> [Country]
+    func fetchCountryDetails(name: String) async throws -> Country
 }
 
 class CountriesRepository: CountryRepository {
@@ -17,12 +18,12 @@ class CountriesRepository: CountryRepository {
     private let apiClient = URLSessionAPIClient<CountryEndpoint>()
     
     func fetchCountry(name: String) async throws -> Country {
-        let details: CountryDetails = try await apiClient.request(.fetchCountry(name: name))
+        let details: [CountryDetails] = try await apiClient.request(.fetchCountry(name: name))
         
         return Country(
-            imageUrl: details.flags?.png ?? "",
-            name: details.name ?? "",
-            capital: details.capital ?? "",
+            imageUrl: details.first?.flags?.png ?? "",
+            name: details.first?.name ?? "",
+            capital: details.first?.capital ?? "",
             currency: ""
         )
     }
@@ -40,4 +41,14 @@ class CountriesRepository: CountryRepository {
         }
     }
     
+    func fetchCountryDetails(name: String) async throws -> Country {
+        let details: [CountryDetails] = try await apiClient.request(.fetchCountryDetails(name: name))
+        
+        return Country(
+            imageUrl: details.first?.flags?.png ?? "",
+            name: details.first?.name ?? "",
+            capital: details.first?.capital ?? "",
+            currency: details.first?.currencies?.first?.name ?? ""
+        )
+    }
 }
