@@ -11,11 +11,18 @@ protocol CountryRepository {
     func fetchCountry(name: String) async throws -> Country
     func searchCountries(query: String) async throws -> [Country]
     func fetchCountryDetails(name: String) async throws -> Country
+    
+    func getFavorites() -> [Country]
+    func addToFavorites(_ country: Country)
 }
 
 class CountriesRepository: CountryRepository {
     
     private let apiClient = URLSessionAPIClient<CountryEndpoint>()
+    var favorites: [Country] = []
+    static let shared = CountriesRepository()  // Singleton
+
+      private init() {}  // Prevent external instantiation
     
     func fetchCountry(name: String) async throws -> Country {
         let details: [CountryDetails] = try await apiClient.request(.fetchCountry(name: name))
@@ -50,5 +57,16 @@ class CountriesRepository: CountryRepository {
             capital: details.first?.capital ?? "",
             currency: details.first?.currencies?.first?.name ?? ""
         )
+    }
+    
+    // Local Data
+    func getFavorites() -> [Country] {
+        return favorites
+    }
+    
+    func addToFavorites(_ country: Country) {
+        if !favorites.contains(where: { $0.name == country.name }) {
+            favorites.append(country)
+        }
     }
 }

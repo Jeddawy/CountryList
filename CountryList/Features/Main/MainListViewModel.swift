@@ -17,7 +17,7 @@ class CountryListViewModel: ObservableObject {
     private let locationService = LocationService()
     private let repository: CountryRepository
     
-    init(repository: CountryRepository = CountriesRepository()) {
+    init(repository: CountryRepository = CountriesRepository.shared) {
         self.repository = repository
     }
     
@@ -42,4 +42,8 @@ class CountryListViewModel: ObservableObject {
             }
         }
     }
+    
+    func loadFavorites() {
+           countries = repository.getFavorites()
+       }
 }

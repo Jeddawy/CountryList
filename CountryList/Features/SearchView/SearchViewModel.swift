@@ -15,7 +15,7 @@ class SearchCountryViewModel: ObservableObject {
     
     private let repository: CountryRepository
     
-    init(repository: CountryRepository = CountriesRepository()) {
+    init(repository: CountryRepository = CountriesRepository.shared) {
         self.repository = repository
     }
     
@@ -33,11 +33,9 @@ class SearchCountryViewModel: ObservableObject {
         }
     }
     
-    //TODO: Check this and fix it
+    
     func addToFavorites(_ country: Country) {
-        if !favoriteCountries.contains(where: { $0.name == country.name }) {
-            favoriteCountries.append(country)
-        }
+        repository.addToFavorites(country)
     }
     
 }

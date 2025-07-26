@@ -53,5 +53,8 @@ struct CountryListView: View {
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
         }
+        .onAppear{
+            viewModel.loadFavorites()
+        }
     }
 }
