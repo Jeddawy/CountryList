@@ -10,4 +10,6 @@ import Foundation
 struct Country {
     var imageUrl: String
     var name: String
+    var capital: String
+    var currency: String
 }

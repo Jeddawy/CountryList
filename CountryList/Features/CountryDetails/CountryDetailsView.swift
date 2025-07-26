@@ -15,8 +15,11 @@ struct CountryDetailsView: View {
         VStack {
             CountryCardView(imageURL: country.imageUrl, title: country.name)
                 .flagCardSize()
+            Text(country.capital)
+            Text(country.currency)
             Spacer()
         }
+        .padding(10)
         .navigationTitle(country.name)
     }
 }
