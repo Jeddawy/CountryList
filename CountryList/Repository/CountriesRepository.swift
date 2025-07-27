@@ -11,8 +11,10 @@ protocol CountryRepository {
     func fetchCountry(name: String) async throws -> [Country]
     func searchCountries(query: String) async throws -> [Country]
     
-    func getMainCountryList() -> [Country]
-    func addToMainCountryList(_ country: Country)
+    func getMainCountryList() async -> [Country]
+    func addToMainCountryList(_ country: Country) async
+    func removeFromMainCountryList(_ country: Country) async
+
 }
 
 class CountriesRepository: CountryRepository {
@@ -35,7 +37,7 @@ class CountriesRepository: CountryRepository {
     //MARK: Main Country View method
     func fetchCountry(name: String) async throws -> [Country] {
         if fetchCountryLocal(name: name) != nil {
-            return getMainCountryList()
+            return await getMainCountryList()
         }
         return try await fetchCountryRemote(name: name)
     }
@@ -60,7 +62,7 @@ class CountriesRepository: CountryRepository {
         )
         
         //save to storage
-        addToMainCountryList(country)
+        await addToMainCountryList(country)
         return [country]
     }
     
@@ -79,11 +81,11 @@ class CountriesRepository: CountryRepository {
     }
     
     // Local Data
-    func getMainCountryList() -> [Country] {
+    func getMainCountryList() async -> [Country] {
         return mainCountryList
     }
     
-    func addToMainCountryList(_ country: Country) {
+    func addToMainCountryList(_ country: Country) async {
         if !mainCountryList.contains(where: { $0.name.lowercased() == country.name.lowercased() }) {
             if mainCountryList.count >= maxCountriesToStore {
                 mainCountryList.removeLast()
@@ -92,5 +94,10 @@ class CountriesRepository: CountryRepository {
             mainCountryList.append(country)
             userDefaults.save(mainCountryList, forKey: MainCountryKey)
         }
+    }
+    
+    func removeFromMainCountryList(_ country: Country) async {
+        mainCountryList.removeAll { $0.name == country.name }
+        userDefaults.save(mainCountryList, forKey: MainCountryKey)
     }
 }

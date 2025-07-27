@@ -9,7 +9,8 @@ import SwiftUI
 
 struct SearchCountryView: View {
     @StateObject private var viewModel = SearchCountryViewModel()
-    
+    @State private var showAddConfirmation = false
+    @State private var countryToAdd: Country?
     var body: some View {
         NavigationStack {
             VStack {
@@ -32,7 +33,8 @@ struct SearchCountryView: View {
                         .listRowBackground(Color.clear)
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button {
-                                viewModel.addToMainCountryList(country)
+                                countryToAdd = country
+                                showAddConfirmation = true
                             } label: {
                                 Label("Add", systemImage: "plus")
                             }
@@ -40,6 +42,21 @@ struct SearchCountryView: View {
                         }
                 }
                 .listStyle(PlainListStyle())
+                .confirmationDialog(
+                    "Are you sure you want to Add this country?",
+                    isPresented: $showAddConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Add", role: .none) {
+                        if let country = countryToAdd {
+                            Task {
+                                viewModel.addToMainCountryList(country)
+                            }
+                        }
+                    }
+                    Button("Cancel", role: .cancel) {}
+                }
+                
             }
             .navigationTitle("Search Country")
         }

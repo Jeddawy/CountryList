@@ -32,20 +32,17 @@ class CountryListViewModel: ObservableObject {
     }
     
     private func fetchCountry(for name: String) async {
-        Task {
-            do {
-                let results = try await repository.fetchCountry(name: name)
-                
-                orderCountryList(results)
-            } catch {
-                print("Error fetching countries: \(error)")
-                self.countries = []
-            }
+        do {
+            let results = try await repository.fetchCountry(name: name)
+            orderCountryList(results)
+        } catch {
+            print("Error fetching countries: \(error)")
+            self.countries = []
         }
     }
     
-    func reloadCountryList() {
-        let countries = repository.getMainCountryList()
+    func reloadCountryList() async {
+        let countries = await repository.getMainCountryList()
         orderCountryList(countries)
     }
     
@@ -55,5 +52,10 @@ class CountryListViewModel: ObservableObject {
         let others = countryList.filter { $0.name != detectedCountry }.sorted { $0.name < $1.name }
         
         self.countries = detectedFirst + others
+    }
+    
+    func removeCountry(_ country: Country) async {
+        await repository.removeFromMainCountryList(country)
+        await reloadCountryList()
     }
 }

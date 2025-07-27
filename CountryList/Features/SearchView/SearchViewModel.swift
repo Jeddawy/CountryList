@@ -33,9 +33,10 @@ class SearchCountryViewModel: ObservableObject {
         }
     }
     
-    //TODO: Add UI Logic and checj before adding new ciuntry if max limit reached
     func addToMainCountryList(_ country: Country) {
-        repository.addToMainCountryList(country)
+        Task {
+            await repository.addToMainCountryList(country)
+        }
     }
     
 }
