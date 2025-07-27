@@ -32,7 +32,7 @@ struct SearchCountryView: View {
                         .listRowBackground(Color.clear)
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button {
-                                viewModel.addToFavorites(country)
+                                viewModel.addToMainCountryList(country)
                             } label: {
                                 Label("Add", systemImage: "plus")
                             }

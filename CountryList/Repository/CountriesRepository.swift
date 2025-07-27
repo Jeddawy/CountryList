@@ -10,7 +10,6 @@ import Foundation
 protocol CountryRepository {
     func fetchCountry(name: String) async throws -> [Country]
     func searchCountries(query: String) async throws -> [Country]
-    func fetchCountryDetails(name: String) async throws -> Country
     
     func getMainCountryList() -> [Country]
     func addToMainCountryList(_ country: Country)
@@ -35,7 +34,7 @@ class CountriesRepository: CountryRepository {
     
     //MARK: Main Country View method
     func fetchCountry(name: String) async throws -> [Country] {
-        if let local = fetchCountryLocal(name: name) {
+        if fetchCountryLocal(name: name) != nil {
             return getMainCountryList()
         }
         return try await fetchCountryRemote(name: name)
@@ -57,7 +56,7 @@ class CountriesRepository: CountryRepository {
             imageUrl: details.first?.flags?.png ?? "",
             name: details.first?.name ?? "",
             capital: details.first?.capital ?? "",
-            currency: ""
+            currency: details.first?.currencies?.first?.name ?? ""
         )
         
         //save to storage
@@ -73,21 +72,10 @@ class CountriesRepository: CountryRepository {
             Country(
                 imageUrl: $0.flags?.png ?? "",
                 name: $0.name ?? "",
-                capital:  "",
-                currency:  ""
+                capital:  $0.capital ?? "",
+                currency:  $0.currencies?.first?.name ?? ""
             )
         }
-    }
-    
-    func fetchCountryDetails(name: String) async throws -> Country {
-        let details: [CountryDetails] = try await apiClient.request(.fetchCountryDetails(name: name))
-        
-        return Country(
-            imageUrl: details.first?.flags?.png ?? "",
-            name: details.first?.name ?? "",
-            capital: details.first?.capital ?? "",
-            currency: details.first?.currencies?.first?.name ?? ""
-        )
     }
     
     // Local Data

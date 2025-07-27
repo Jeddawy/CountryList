@@ -33,10 +33,8 @@ class SearchCountryViewModel: ObservableObject {
         }
     }
     
-    
-    func addToFavorites(_ country: Country) {
-        let countyList = repository.getMainCountryList()
-                    
+    //TODO: Add UI Logic and checj before adding new ciuntry if max limit reached
+    func addToMainCountryList(_ country: Country) {
         repository.addToMainCountryList(country)
     }
     

@@ -18,8 +18,6 @@ enum CountryEndpoint: APIEndpoint {
     
     case fetchCountry(name: String)
     case searchCountry(name: String)
-    case fetchCountryDetails(name: String)
-
 
     var baseURL: URL {
         URL(string: "https://restcountries.com/v2/")!
@@ -31,14 +29,12 @@ enum CountryEndpoint: APIEndpoint {
             return "name/\(name)"
         case .searchCountry(let name):
             return "name/\(name)"
-        case .fetchCountryDetails(let name):
-            return "name/\(name)"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .fetchCountry, .searchCountry, .fetchCountryDetails:
+        case .fetchCountry, .searchCountry:
             return .get
         }
     }
@@ -53,15 +49,11 @@ enum CountryEndpoint: APIEndpoint {
     var parameters: [String: Any?]? {
         switch self {
         case .searchCountry:
-            var items : [String: Any] = ["fields" : "\(CountryParameterFields.flags.rawValue),\(CountryParameterFields.name.rawValue)"]
-            return items
-        case .fetchCountry:
-            var items : [String: Any] = ["fields" : "\(CountryParameterFields.flags.rawValue),\(CountryParameterFields.name.rawValue)"]
-            return items
-        case .fetchCountryDetails:
             let fields = CountryParameterFields.allCases.map { $0.rawValue }.joined(separator: ",")
             return ["fields": fields]
-
+        case .fetchCountry:
+            let fields = CountryParameterFields.allCases.map { $0.rawValue }.joined(separator: ",")
+            return ["fields": fields]
         }
     }
 }
