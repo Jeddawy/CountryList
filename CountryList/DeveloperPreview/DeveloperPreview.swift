@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Country {
+struct Country: Codable {
     var imageUrl: String
     var name: String
     var capital: String

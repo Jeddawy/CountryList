@@ -54,7 +54,7 @@ struct CountryListView: View {
             .listRowBackground(Color.clear)
         }
         .onAppear{
-            viewModel.loadFavorites()
+            viewModel.reloadCountryList()
         }
     }
 }

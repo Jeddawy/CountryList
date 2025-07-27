@@ -13,7 +13,7 @@ class CountryListViewModel: ObservableObject {
     
     @Published var countryDetails: CountryDetails? = nil
     @Published var isLoading = false
-    @Published var country: String = "Egypt"
+    @Published var detectedCountry: String = "Egypt"
     private let locationService = LocationService()
     private let repository: CountryRepository
     
@@ -26,7 +26,7 @@ class CountryListViewModel: ObservableObject {
             isLoading = true
             defer { isLoading = false }
             let result = await locationService.requestCountry()
-            country = result
+            detectedCountry = result
             await fetchCountry(for: result)
         }
     }
@@ -35,7 +35,8 @@ class CountryListViewModel: ObservableObject {
         Task {
             do {
                 let results = try await repository.fetchCountry(name: name)
-                self.countries = [results]
+                
+                orderCountryList(results)
             } catch {
                 print("Error fetching countries: \(error)")
                 self.countries = []
@@ -43,7 +44,16 @@ class CountryListViewModel: ObservableObject {
         }
     }
     
-    func loadFavorites() {
-           countries = repository.getFavorites()
-       }
+    func reloadCountryList() {
+        let countries = repository.getMainCountryList()
+        orderCountryList(countries)
+    }
+    
+    private func orderCountryList(_ countryList: [Country]) {
+        // Separate detected country and others
+        let detectedFirst = countryList.filter { $0.name == detectedCountry }
+        let others = countryList.filter { $0.name != detectedCountry }.sorted { $0.name < $1.name }
+        
+        self.countries = detectedFirst + others
+    }
 }

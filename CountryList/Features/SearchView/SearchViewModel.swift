@@ -35,7 +35,9 @@ class SearchCountryViewModel: ObservableObject {
     
     
     func addToFavorites(_ country: Country) {
-        repository.addToFavorites(country)
+        let countyList = repository.getMainCountryList()
+                    
+        repository.addToMainCountryList(country)
     }
     
 }
