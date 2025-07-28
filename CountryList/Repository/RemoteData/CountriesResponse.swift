@@ -12,10 +12,10 @@ struct CountryDetails: Decodable {
     let flags: Flags?
     let capital: String?
     let currencies: [Currency]?
-    
-    struct Flags: Decodable {
-        let png: String?
-    }
+}
+
+struct Flags: Decodable {
+    let png: String?
 }
 
 struct Currency: Decodable {

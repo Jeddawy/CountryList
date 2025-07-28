@@ -24,17 +24,20 @@ class CountriesRepository: CountryRepository {
     private let maxCountriesToStore = 5
     private var mainCountryList: [Country] = []
     
-    static let shared = CountriesRepository()
     
     private let MainCountryKey = "main_countries"
     
-    private init(userdefaults: UserDefaultsServiceProtocol = UserDefaultsService.shared,
-                 apiClient : APIClientProtocol = URLSessionAPIClient<CountryEndpoint>()) {
-        self.userDefaults = userdefaults
-        self.apiClient = apiClient
-        self.mainCountryList = userDefaults.load(forKey: MainCountryKey, as: [Country].self) ?? []
-    }
-    
+    static let shared = CountriesRepository(
+           apiClient: URLSessionAPIClient<CountryEndpoint>(),
+           userDefaults: UserDefaultsService.shared
+       )
+       
+       // Internal init for DI (not private)
+       init(apiClient: APIClientProtocol, userDefaults: UserDefaultsServiceProtocol) {
+           self.apiClient = apiClient
+           self.userDefaults = userDefaults
+           self.mainCountryList = userDefaults.load(forKey: MainCountryKey, as: [Country].self) ?? []
+       }
     
     //MARK: Main Country View method
     func fetchCountry(name: String) async throws -> [Country] {
