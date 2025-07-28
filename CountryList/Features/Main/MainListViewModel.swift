@@ -31,7 +31,7 @@ class CountryListViewModel: ObservableObject {
         }
     }
     
-    private func fetchCountry(for name: String) async {
+    func fetchCountry(for name: String) async {
         do {
             let results = try await repository.fetchCountry(name: name)
             orderCountryList(results)
