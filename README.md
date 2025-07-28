@@ -127,6 +127,10 @@ CountryList/
     └── Assets.xcassets/              # App assets
 ```
 
+## 📁 Archtecture Diagram
+
+<img width="589" height="412" alt="Diagram" src="https://github.com/user-attachments/assets/440d78c4-e7b4-4871-8023-9feda2060b50" />
+
 ## 🧪 Testing
 
 The project includes comprehensive test coverage:
@@ -154,8 +158,9 @@ Cmd + U
 - **REST Countries API**: Country data source
 
 ## 📱 Screenshots
+![Demo](https://github.com/user-attachments/assets/e1b4f8ff-1cd7-47ee-88d2-bf95da8e063b)
 
-*[Add screenshots of your app here]*
+
 
 ---
 
