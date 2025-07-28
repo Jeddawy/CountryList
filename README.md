@@ -157,7 +157,7 @@ Cmd + U
 - **UserDefaults**: Local data persistence
 - **REST Countries API**: Country data source
 
-## 📱 Screenshots
+## 📱 Demo
 ![Demo](https://github.com/user-attachments/assets/e1b4f8ff-1cd7-47ee-88d2-bf95da8e063b)
 
 
