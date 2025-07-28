@@ -8,7 +8,6 @@
 import Combine
 import Foundation
 
-protocol APIClient {
-    associatedtype EndpointType: APIEndpoint
-    func request<T: Decodable>(_ endpoint: EndpointType) async throws -> T
+protocol APIClientProtocol {
+    func request<T: Decodable>(_ endpoint: any APIEndpoint) async throws -> T
 }

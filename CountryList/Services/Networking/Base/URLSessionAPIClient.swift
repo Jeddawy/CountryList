@@ -7,14 +7,15 @@
 
 import Foundation
 
-class URLSessionAPIClient<EndpointType: APIEndpoint>: APIClient {
+class URLSessionAPIClient<EndpointType: APIEndpoint>: APIClientProtocol {
+    
     private let session: URLSession
     
     init(session: URLSession = .shared) {
         self.session = session
     }
     
-    func request<T: Decodable>(_ endpoint: EndpointType) async throws -> T {
+    func request<T: Decodable>(_ endpoint: any APIEndpoint) async throws -> T {
         var urlComponents = URLComponents(url: endpoint.baseURL.appendingPathComponent(endpoint.path), resolvingAgainstBaseURL: false)
         
         // Add parameters to the request if they exist

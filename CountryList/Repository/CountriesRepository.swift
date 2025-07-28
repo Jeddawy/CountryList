@@ -19,7 +19,7 @@ protocol CountryRepository {
 
 class CountriesRepository: CountryRepository {
     
-    private let apiClient = URLSessionAPIClient<CountryEndpoint>()
+    private let apiClient: APIClientProtocol
     private var userDefaults: UserDefaultsServiceProtocol
     private let maxCountriesToStore = 5
     private var mainCountryList: [Country] = []
@@ -28,8 +28,10 @@ class CountriesRepository: CountryRepository {
     
     private let MainCountryKey = "main_countries"
     
-    private init(userdefaults: UserDefaultsServiceProtocol = UserDefaultsService.shared) {
+    private init(userdefaults: UserDefaultsServiceProtocol = UserDefaultsService.shared,
+                 apiClient : APIClientProtocol = URLSessionAPIClient<CountryEndpoint>()) {
         self.userDefaults = userdefaults
+        self.apiClient = apiClient
         self.mainCountryList = userDefaults.load(forKey: MainCountryKey, as: [Country].self) ?? []
     }
     
@@ -52,7 +54,7 @@ class CountriesRepository: CountryRepository {
     
     // Remote
     private func fetchCountryRemote(name: String) async throws -> [Country] {
-        let details: [CountryDetails] = try await apiClient.request(.fetchCountry(name: name))
+        let details: [CountryDetails] = try await apiClient.request(CountryEndpoint.fetchCountry(name: name))
         
         let country = Country(
             imageUrl: details.first?.flags?.png ?? "",
@@ -68,7 +70,7 @@ class CountriesRepository: CountryRepository {
     
     
     func searchCountries(query: String) async throws -> [Country] {
-        let details: [CountryDetails] = try await apiClient.request(.searchCountry(name: query))
+        let details: [CountryDetails] = try await apiClient.request(CountryEndpoint.searchCountry(name: query))
         
         return details.map {
             Country(
