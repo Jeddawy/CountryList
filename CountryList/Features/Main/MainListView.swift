@@ -10,11 +10,12 @@ import SwiftUI
 // MARK: - Main View
 struct MainListView: View {
     @StateObject private var viewModel = CountryListViewModel()
+    
     var body: some View {
         NavigationStack {
             CountryListView(viewModel: viewModel)
                 .listStyle(.plain)
-                .navigationTitle("Country List")
+                .navigationTitle(AppText.MainList.navigationTitle)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -56,7 +57,7 @@ struct CountryListView: View {
                     countryToDelete = country
                     showDeleteConfirmation = true
                 } label: {
-                    Label("Delete", systemImage: "trash")
+                    Label(AppText.MainList.deleteButton, systemImage: "trash")
                 }
             }
         }
@@ -65,19 +66,20 @@ struct CountryListView: View {
                 await viewModel.reloadCountryList()
             }
         }
+        // Dialog for confirmation
         .confirmationDialog(
-            "Are you sure you want to delete this country?",
+            AppText.MainList.deleteConfirmationTitle,
             isPresented: $showDeleteConfirmation,
             titleVisibility: .visible
         ) {
-            Button("Delete", role: .destructive) {
+            Button(AppText.MainList.deleteButton, role: .destructive) {
                 if let country = countryToDelete {
                     Task {
                         await viewModel.removeCountry(country)
                     }
                 }
             }
-            Button("Cancel", role: .cancel) {}
+            Button(AppText.MainList.cancelButton, role: .cancel) {}
         }
     }
 }

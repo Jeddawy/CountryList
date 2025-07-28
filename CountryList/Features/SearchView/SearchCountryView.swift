@@ -22,7 +22,7 @@ struct SearchCountryView: View {
                 .padding(.top)
                 
                 if viewModel.isLoading {
-                    ProgressView("Searching...")
+                    ProgressView(AppText.SearchView.searching)
                         .padding()
                 }
                 
@@ -36,29 +36,29 @@ struct SearchCountryView: View {
                                 countryToAdd = country
                                 showAddConfirmation = true
                             } label: {
-                                Label("Add", systemImage: "plus")
+                                Label(AppText.SearchView.addButton, systemImage: "plus")
                             }
                             .tint(.green)
                         }
                 }
                 .listStyle(PlainListStyle())
                 .confirmationDialog(
-                    "Are you sure you want to Add this country?",
+                    AppText.SearchView.addeConfirmationTitle,
                     isPresented: $showAddConfirmation,
                     titleVisibility: .visible
                 ) {
-                    Button("Add", role: .none) {
+                    Button(AppText.SearchView.addButton, role: .none) {
                         if let country = countryToAdd {
                             Task {
                                 viewModel.addToMainCountryList(country)
                             }
                         }
                     }
-                    Button("Cancel", role: .cancel) {}
+                    Button(AppText.SearchView.cancelButton, role: .cancel) {}
                 }
                 
             }
-            .navigationTitle("Search Country")
+            .navigationTitle(AppText.SearchView.navigationTitle)
         }
     }
 }
